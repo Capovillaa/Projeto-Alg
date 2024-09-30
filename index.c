@@ -11,12 +11,16 @@ struct dados_livro{
   int qtd;
 };
 int verifica_id(struct dados_livro estoque[],int id_temp){
-    for(int i = 0;i < qtdLivros;i++){
+    for(int i = 0;i<qtdLivros;i++){
         if(estoque[i].id == id_temp){
             return 1;
         }
     }
     return 0;
+}
+int verifica_qtd_livro(int qtd_temp){
+    if(qtd_temp > 10)return 1;
+    else return 0;
 }
 void cadastro_livro(struct dados_livro estoque[]){
     int id_temp,qtd_temp;
@@ -37,7 +41,13 @@ void cadastro_livro(struct dados_livro estoque[]){
     printf("Digite o ano de publicacao: ");
     scanf("%d",&estoque[qtdLivros].ano_pub);
     printf("Digite a quantidade deste livro: ");
-    scanf("%d",&estoque[qtdLivros].qtd);
+    scanf("%d",&qtd_temp);
+    while(verifica_qtd_livro(qtd_temp)){
+        printf("-------------------------\n");
+        printf("Quantidade invalida,digite outra:\n");
+        scanf("%d",&qtd_temp);
+    }
+    estoque[qtdLivros].qtd = qtd_temp;
     printf("-------------------------\n");
     qtdLivros++;
 }
@@ -70,11 +80,13 @@ void consulta_livro(struct dados_livro estoque[]){
                 break;
             case 2:
                 int id_busca, encontrado = 0;
+                printf("-------------------------\n");
                 printf("Digite o ID do livro: ");
                 scanf("%d", &id_busca);
                 for(int i = 0; i < qtdLivros; i++){
                     if(estoque[i].id == id_busca){
                         printf("Livro encontrado! \n");
+                        printf("-------------------------\n");
                         print_livro(estoque[i]);
                         encontrado = 1;
                         break;
@@ -82,6 +94,7 @@ void consulta_livro(struct dados_livro estoque[]){
                 }
                 if(!encontrado){
                     printf("Livro com ID %d nao encontrado. \n", id_busca);
+                    printf("-------------------------\n");
                 }
             case 3:
                 break;
