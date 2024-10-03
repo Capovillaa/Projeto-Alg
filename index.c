@@ -19,7 +19,7 @@ int verifica_id(struct dados_livro estoque[],int id_temp){
     return 0;
 }
 int verifica_qtd_livro(int qtd_temp){
-    if(qtd_temp > 10)return 1;
+    if(qtd_temp > 10 || qtd_temp < 1)return 1;
     else return 0;
 }
 void cadastro_livro(struct dados_livro estoque[]){
@@ -43,12 +43,12 @@ void cadastro_livro(struct dados_livro estoque[]){
     printf("Digite a quantidade deste livro: ");
     scanf("%d",&qtd_temp);
     while(verifica_qtd_livro(qtd_temp)){
-        printf("-------------------------\n");
+        printf("------------------\n");
         printf("Quantidade invalida,digite outra:\n");
         scanf("%d",&qtd_temp);
     }
     estoque[qtdLivros].qtd = qtd_temp;
-    printf("-------------------------\n");
+    printf("------------------\n");
     qtdLivros++;
 }
 void print_livro(struct dados_livro estoque){
@@ -58,11 +58,11 @@ void print_livro(struct dados_livro estoque){
     printf("Numero de paginas: %d\n", estoque.num_pag);
     printf("Ano de publicacao: %d\n", estoque.ano_pub);
     printf("Quantidade: %d\n", estoque.qtd);
-    printf("-------------------------\n");
+    printf("------------------\n");
 }
 void consulta_livro(struct dados_livro estoque[]){
     int optConsulta;
-    printf("-------------------------\n");
+    printf("------------------\n");
     printf("Escolha uma opcao de consulta:\n");
     optConsulta = 0;
     while(optConsulta != 3){
@@ -80,13 +80,13 @@ void consulta_livro(struct dados_livro estoque[]){
                 break;
             case 2:
                 int id_busca, encontrado = 0;
-                printf("-------------------------\n");
+                printf("------------------\n");
                 printf("Digite o ID do livro: ");
                 scanf("%d", &id_busca);
                 for(int i = 0; i < qtdLivros; i++){
                     if(estoque[i].id == id_busca){
                         printf("Livro encontrado! \n");
-                        printf("-------------------------\n");
+                        printf("------------------\n");
                         print_livro(estoque[i]);
                         encontrado = 1;
                         break;
@@ -94,7 +94,7 @@ void consulta_livro(struct dados_livro estoque[]){
                 }
                 if(!encontrado){
                     printf("Livro com ID %d nao encontrado. \n", id_busca);
-                    printf("-------------------------\n");
+                    printf("------------------\n");
                 }
             case 3:
                 break;
@@ -107,7 +107,8 @@ int main(){
     struct dados_livro estoque[100];
     int opt = 0;
     while(opt != 6){
-        printf("Menu: ");
+        printf("-------Menu-------\n");
+        printf("1- Cadastrar livro\n2- Consultar livro\n");
         scanf("%d",&opt);
         switch (opt){
             case 1:
