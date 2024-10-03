@@ -1,7 +1,10 @@
 #include <stdio.h>
-
+int qtd_clientes = 0;
 int qtdLivros = 0;
-
+struct cliente{
+    char nome[50];
+    int id;
+};
 struct dados_livro{
   int id;
   char titulo[50];
@@ -9,6 +12,8 @@ struct dados_livro{
   int num_pag;
   int ano_pub;
   int qtd;
+  int emprestimos[10];
+  int tamanhoEm = 0;
 };
 int verifica_id(struct dados_livro estoque[],int id_temp){
     for(int i = 0;i<qtdLivros;i++){
@@ -21,6 +26,14 @@ int verifica_id(struct dados_livro estoque[],int id_temp){
 int verifica_qtd_livro(int qtd_temp){
     if(qtd_temp > 10 || qtd_temp < 1)return 1;
     else return 0;
+}
+int verifica_id_cliente(struct cliente clientes[],int id_temp){
+    for(int i = 0;i<qtd_clientes;i++){
+        if(clientes[i].id == id_temp){
+            return 1;
+        }
+    }
+    return 0;
 }
 void cadastro_livro(struct dados_livro estoque[]){
     int id_temp,qtd_temp;
@@ -71,7 +84,9 @@ void consulta_livro(struct dados_livro estoque[]){
         switch (optConsulta){
             case 1:
                 if(qtdLivros == 0){
+                    printf("------------------\n");
                     printf("Nenhum livro cadastrado.\n");
+                    printf("------------------\n");
                 }else{
                     for(int i = 0; i < qtdLivros; i++){
                         print_livro(estoque[i]);
@@ -103,12 +118,33 @@ void consulta_livro(struct dados_livro estoque[]){
         }
     }
 }
+void emprestimo_livro(struct dados_livro estoque[],struct cliente clientes[]){
+    int id_livro,id_temp;
+    printf("Digite id do cliente: ");
+    scanf("%d",&id_temp);
+    while(verifica_id_cliente(clientes,id_temp)){
+        printf("O Id %d ja existe,Digite outro:\n",id_temp);
+        scanf("%d",&id_temp);
+    }
+    clientes[qtd_clientes].id = id_temp;
+    printf("Digite o id do livro: ");
+    scanf("%d",id_livro);
+    for(int i = 0;i<qtdLivros;i++){
+        if(estoque[i].id == id_livro){
+            estoque[i].emprestimos[tamanhoEm] = clientes[tamanhoEm].id;
+            estoque[i].tamanhoEm++;
+            estoque[i].qtd--;
+        }
+    }
+    qtd_clientes++;
+}
 int main(){
     struct dados_livro estoque[100];
+    struct cliente clientes[1000];
     int opt = 0;
     while(opt != 6){
         printf("-------Menu-------\n");
-        printf("1- Cadastrar livro\n2- Consultar livro\n");
+        printf("1- Cadastrar livro\n2- Consultar livro\n3- Emprestimo de livro\n");
         scanf("%d",&opt);
         switch (opt){
             case 1:
@@ -116,7 +152,10 @@ int main(){
                 break;
             case 2:
                 consulta_livro(estoque);
-                break; 
+                break;
+            case 3:
+                emprestimo_livro(estoque,clientes);
+                break;
         }
     }
 }
