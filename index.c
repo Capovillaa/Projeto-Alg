@@ -20,12 +20,7 @@ struct dados_livro{
   int tamanhoEm;
 };
 
-void ignore_input() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF); 
-}
-
-int verifica_id(struct dados_livro estoque[],int id_temp){
+int verifica_id_livro(struct dados_livro estoque[],int id_temp){
     for(int i = 0;i<qtdLivros;i++){
         if(estoque[i].id == id_temp){
             return 1;
@@ -37,6 +32,11 @@ int verifica_id(struct dados_livro estoque[],int id_temp){
 int verifica_qtd_livro(int qtd_temp){
     if(qtd_temp > 10 || qtd_temp < 1)return 1;
     else return 0;
+}
+
+void ignore_input() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF); 
 }
 
 void cadastro_clientes(struct cliente *clientes){
@@ -56,7 +56,7 @@ void cadastro_livro(struct dados_livro estoque[]){
     int id_temp,qtd_temp;
     printf("Digite o Id do livro: ");
     scanf("%d",&id_temp);
-    while(verifica_id(estoque,id_temp)){
+    while(verifica_id_livro(estoque,id_temp)){
         printf("O Id %d ja existe,Digite outro:\n",id_temp);
         scanf("%d",&id_temp);
     }
@@ -156,17 +156,22 @@ void emprestimo_livro(struct dados_livro estoque[],struct cliente clientes[]){
         case 2:
             break;
         default:
-            printf("opcao invalida");
+            printf("opcao invalida\n");
+            return;
     }
-    int id_cliente;
+    int id_cliente,id_temp_livro,id_cliente_temp;
     printf("Digite o ID do cliente:");
-    scanf("%d",&id_cliente);
-    printf("Digite o id do livro: ");
-    scanf("%d",&id_livro);
+    scanf("%d",&id_cliente_temp);//verificar se o id do cliente se ja n esta presente no estoque[indicequalquer].emprestimos[outroindice]
+    printf("Digite o Id do livro: ");
+    scanf("%d",&id_temp_livro);
+    while(verifica_id_livro(estoque,id_temp_livro) != 1){
+        printf("O livro com o Id %d nao existe,Digite outro:\n",id_temp_livro);
+        scanf("%d",&id_temp_livro);
+    }
     for(int i = 0;i<qtdLivros;i++){
-        if(estoque[i].id == id_livro){
+        if(estoque[i].id == id_temp_livro){
             for(int j = 0;j<qtd_clientes;j++){
-                if(clientes[j].id == id_cliente){
+                if(clientes[j].id == id_cliente_temp){
                     estoque[i].emprestimos[estoque[i].tamanhoEm] = clientes[j].id;
                     estoque[i].qtd--;
                     estoque[i].tamanhoEm++;
