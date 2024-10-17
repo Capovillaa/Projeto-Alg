@@ -20,6 +20,11 @@ struct dados_livro{
   int tamanhoEm;
 };
 
+void ignore_input() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF); 
+}
+
 int verifica_id(struct dados_livro estoque[],int id_temp){
     for(int i = 0;i<qtdLivros;i++){
         if(estoque[i].id == id_temp){
@@ -32,11 +37,6 @@ int verifica_id(struct dados_livro estoque[],int id_temp){
 int verifica_qtd_livro(int qtd_temp){
     if(qtd_temp > 10 || qtd_temp < 1)return 1;
     else return 0;
-}
-
-void ignore_input() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF); 
 }
 
 void cadastro_clientes(struct cliente *clientes){
