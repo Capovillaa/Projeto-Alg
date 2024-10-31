@@ -168,14 +168,28 @@ void emprestimo_livro(struct dados_livro estoque[],struct cliente clientes[]){
         printf("O livro com o Id %d nao existe,Digite outro:\n",id_temp_livro);
         scanf("%d",&id_temp_livro);
     }
+    for (int i = 0; i < qtdLivros; i++) {
+        if (estoque[i].id == id_temp_livro) {
+            for (int j = 0; j < estoque[i].tamanhoEm; j++) {
+                if (estoque[i].emprestimos[j] == id_cliente_temp) {
+                    printf("Voce ja possui um emprestimo ativo deste livro. nao e possivel fazer outro.\n");
+                    return;
+            }
+        }
+    }
+}
     for(int i = 0;i<qtdLivros;i++){
         if(estoque[i].id == id_temp_livro){
             for(int j = 0;j<qtd_clientes;j++){
                 if(clientes[j].id == id_cliente_temp){
+                    if(estoque[i].qtd == 0 ){
+                        printf("O livro nao esta disponivel para emprestimo \n");
+                        return;
+                    }
                     estoque[i].emprestimos[estoque[i].tamanhoEm] = clientes[j].id;
                     estoque[i].qtd--;
                     estoque[i].tamanhoEm++;
-                    printf("Empréstimo realizado com sucesso!\n");
+                    printf("Empréstimo realizado com sucesso!\nRestam %d exemplares deste livro\n",estoque[i].qtd);
                     return;
                 }
             }
@@ -190,6 +204,7 @@ void teste(struct dados_livro estoque[]){
         }
     }
 }
+
 int main(){
     struct dados_livro estoque[100];
     struct cliente clientes[1000];
