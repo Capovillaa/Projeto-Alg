@@ -159,25 +159,25 @@ void emprestimo_livro(struct dados_livro estoque[],struct cliente clientes[]){
             printf("opcao invalida\n");
             return;
     }
-    int id_cliente,id_temp_livro,id_cliente_temp;
+    int id_temp_livro,id_cliente_temp;
     printf("Digite o ID do cliente:");
-    scanf("%d",&id_cliente_temp);//verificar se o id do cliente se ja n esta presente no estoque[indicequalquer].emprestimos[outroindice]
-    printf("Digite o Id do livro: ");
-    scanf("%d",&id_temp_livro);
-    while(verifica_id_livro(estoque,id_temp_livro) != 1){
-        printf("O livro com o Id %d nao existe,Digite outro:\n",id_temp_livro);
-        scanf("%d",&id_temp_livro);
-    }
+    scanf("%d",&id_cliente_temp);
     for (int i = 0; i < qtdLivros; i++) {
         if (estoque[i].id == id_temp_livro) {
             for (int j = 0; j < estoque[i].tamanhoEm; j++) {
                 if (estoque[i].emprestimos[j] == id_cliente_temp) {
                     printf("Voce ja possui um emprestimo ativo deste livro. nao e possivel fazer outro.\n");
                     return;
+                }
             }
         }
     }
-}
+    printf("Digite o Id do livro: ");
+    scanf("%d",&id_temp_livro);
+    while(verifica_id_livro(estoque,id_temp_livro) != 1){
+        printf("O livro com o Id %d nao existe,Digite outro:\n",id_temp_livro);
+        scanf("%d",&id_temp_livro);
+    }
     for(int i = 0;i<qtdLivros;i++){
         if(estoque[i].id == id_temp_livro){
             for(int j = 0;j<qtd_clientes;j++){
@@ -197,6 +197,60 @@ void emprestimo_livro(struct dados_livro estoque[],struct cliente clientes[]){
     }
 }
 
+void devolucao(struct dados_livro estoque[],struct cliente clientes[]){
+    int id_temp_livro,id_cliente_temp;
+    printf("Digite o id do livro a ser devolvido:");
+    scanf("%d",&id_temp_livro);
+    while(verifica_id_livro(estoque,id_temp_livro) != 1){
+        printf("O livro com o Id %d nao existe,Digite outro:\n",id_temp_livro);
+        scanf("%d",&id_temp_livro);
+    }
+    
+    printf("Digite o id do cliente:");
+    scanf("%d",&id_cliente_temp);
+    for(int i = 0;i<qtdLivros;i++){
+        if(estoque[i].id == id_temp_livro ){
+            for (int j = 0; j < estoque[i].tamanhoEm; j++) {
+                if (estoque[i].emprestimos[j] == id_cliente_temp) {
+                    estoque[i].qtd++;
+                    
+                    for (int k = j; k < estoque[i].tamanhoEm - 1; k++) {
+                        estoque[i].emprestimos[k] = estoque[i].emprestimos[k + 1];
+                    }
+                    
+                    estoque[i].tamanhoEm--;
+                    
+                    printf("Livro devolvido com sucesso!!\n");
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void remover_livro(struct dados_livro estoque[]){
+    int id_temp_livro;
+    printf("Digite o id do livro a ser removido do estoque:");
+    scanf("%d",&id_temp_livro);
+    while(verifica_id_livro(estoque,id_temp_livro) != 1){
+        printf("O livro com o Id %d nao existe,Digite outro:\n",id_temp_livro);
+        scanf("%d",&id_temp_livro);
+    }
+    
+    for (int i = 0; i < qtdLivros; i++) {
+        if (estoque[i].id == id_temp_livro) {
+            
+            for (int j = i; j < qtdLivros - 1; j++) {
+                estoque[j] = estoque[j + 1];
+            }
+            qtdLivros--; 
+            printf("Livro com id %d removido do estoque com sucesso!\n", id_temp_livro);
+            return; 
+        }
+    }
+    
+    printf("Livro não encontrado no estoque.\n");
+}
 void teste(struct dados_livro estoque[]){
     for(int i = 0;i<qtdLivros;i++){
         for(int j = 0;j<estoque[i].tamanhoEm;j++){
@@ -211,7 +265,7 @@ int main(){
     int opt = 0;
     while(opt != 6){
         printf("-------Menu-------\n");
-        printf("1- Cadastrar livro\n2- Consultar livro\n3- Emprestimo de livro\n");
+        printf("1- Cadastrar livro\n2- Consultar livro\n3- Emprestimo de livro\n4-Devolucao\n5-Remover Livro\n");
         scanf("%d",&opt);
         switch (opt){
             case 1:
@@ -224,8 +278,11 @@ int main(){
                 emprestimo_livro(estoque,clientes);
                 break;
             case 4:
-                teste(estoque);
+                devolucao(estoque,clientes);
                 break;
+            case 5:
+                remover_livro(estoque);
+            
         }
     }
 }
