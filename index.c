@@ -272,12 +272,6 @@ void remover_livro(struct dados_livro estoque[]){
     
     printf("Livro não encontrado no estoque.\n");
 }
-void teste(struct dados_livro estoque[]){
-    for(int i = 0;i<qtdLivros;i++){
-        printf("%d",estoque[i].id);
-        
-    }
-}
 
 int main(){
     struct dados_livro estoque[100];
@@ -285,7 +279,7 @@ int main(){
     int opt = 0;
     while(opt != 6){
         printf("-------Menu-------\n");
-        printf("1- Cadastrar livro\n2- Consultar livro\n3- Emprestimo de livro\n4- Devolucao\n5- Remover Livro\n");
+        printf("1- Cadastrar livro\n2- Consultar livro\n3- Emprestimo de livro\n4- Devolucao\n5- Remover Livro\n6- Sair\n");
         scanf("%d",&opt);
         switch (opt){
             case 1:
@@ -303,8 +297,9 @@ int main(){
             case 5:
                 remover_livro(estoque);
                 break;
-            case 7:
-                teste(estoque);
+            default:
+                printf("Opcao invalida\n");
+                break;
         }
     }
 }
