@@ -28,7 +28,14 @@ int verifica_id_livro(struct dados_livro estoque[],int id_temp){
     }
     return 0;
 }
-
+int verifica_id_cliente(struct cliente clientes[],int id_temp){
+    for(int i = 0;i<qtd_clientes;i++){
+        if(clientes[i].id == id_temp){
+            return 1;
+        }
+    }
+    return 0;
+}
 int verifica_qtd_livro(int qtd_temp){
     if(qtd_temp > 10 || qtd_temp < 1)return 1;
     else return 0;
@@ -77,6 +84,7 @@ void cadastro_livro(struct dados_livro estoque[]){
         printf("Quantidade invalida,digite outra:\n");
         scanf("%d",&qtd_temp);
     }
+    printf("Livro cadastrado com sucesso!!!\n");
     estoque[qtdLivros].qtd = qtd_temp;
     estoque[qtdLivros].tamanhoEm = 0;
     qtdLivros++;
@@ -108,6 +116,7 @@ void consulta_livro(struct dados_livro estoque[]){
                     printf("------------------\n");
                 }else{
                     for(int i = 0; i < qtdLivros; i++){
+                        printf("------------------\n");
                         print_livro(estoque[i]);
                     }
                 }
@@ -162,6 +171,17 @@ void emprestimo_livro(struct dados_livro estoque[],struct cliente clientes[]){
     int id_temp_livro,id_cliente_temp;
     printf("Digite o ID do cliente:");
     scanf("%d",&id_cliente_temp);
+    while(verifica_id_cliente(clientes,id_cliente_temp)!= 1){
+        printf("O cliente com o Id %d nao existe,Digite outro:\n",id_cliente_temp);
+        scanf("%d",&id_cliente_temp);
+    }
+    
+    printf("Digite o Id do livro: ");
+    scanf("%d",&id_temp_livro);
+    while(verifica_id_livro(estoque,id_temp_livro) != 1){
+        printf("O livro com o Id %d nao existe,Digite outro:\n",id_temp_livro);
+        scanf("%d",&id_temp_livro);
+    }
     for (int i = 0; i < qtdLivros; i++) {
         if (estoque[i].id == id_temp_livro) {
             for (int j = 0; j < estoque[i].tamanhoEm; j++) {
@@ -172,18 +192,12 @@ void emprestimo_livro(struct dados_livro estoque[],struct cliente clientes[]){
             }
         }
     }
-    printf("Digite o Id do livro: ");
-    scanf("%d",&id_temp_livro);
-    while(verifica_id_livro(estoque,id_temp_livro) != 1){
-        printf("O livro com o Id %d nao existe,Digite outro:\n",id_temp_livro);
-        scanf("%d",&id_temp_livro);
-    }
     for(int i = 0;i<qtdLivros;i++){
         if(estoque[i].id == id_temp_livro){
             for(int j = 0;j<qtd_clientes;j++){
                 if(clientes[j].id == id_cliente_temp){
                     if(estoque[i].qtd == 0 ){
-                        printf("O livro nao esta disponivel para emprestimo \n");
+                        printf("Nao ha mais exemplares deste livro\n");
                         return;
                     }
                     estoque[i].emprestimos[estoque[i].tamanhoEm] = clientes[j].id;
@@ -199,6 +213,7 @@ void emprestimo_livro(struct dados_livro estoque[],struct cliente clientes[]){
 
 void devolucao(struct dados_livro estoque[],struct cliente clientes[]){
     int id_temp_livro,id_cliente_temp;
+    printf("------------------\n");
     printf("Digite o id do livro a ser devolvido:");
     scanf("%d",&id_temp_livro);
     while(verifica_id_livro(estoque,id_temp_livro) != 1){
@@ -208,6 +223,11 @@ void devolucao(struct dados_livro estoque[],struct cliente clientes[]){
     
     printf("Digite o id do cliente:");
     scanf("%d",&id_cliente_temp);
+    while(verifica_id_cliente(clientes,id_cliente_temp) != 1){
+        printf("O cliente com o Id %d nao existe,Digite outro:\n",id_cliente_temp);
+        scanf("%d",&id_cliente_temp);
+    }
+    
     for(int i = 0;i<qtdLivros;i++){
         if(estoque[i].id == id_temp_livro ){
             for (int j = 0; j < estoque[i].tamanhoEm; j++) {
@@ -230,6 +250,7 @@ void devolucao(struct dados_livro estoque[],struct cliente clientes[]){
 
 void remover_livro(struct dados_livro estoque[]){
     int id_temp_livro;
+    printf("------------------\n");
     printf("Digite o id do livro a ser removido do estoque:");
     scanf("%d",&id_temp_livro);
     while(verifica_id_livro(estoque,id_temp_livro) != 1){
@@ -253,9 +274,8 @@ void remover_livro(struct dados_livro estoque[]){
 }
 void teste(struct dados_livro estoque[]){
     for(int i = 0;i<qtdLivros;i++){
-        for(int j = 0;j<estoque[i].tamanhoEm;j++){
-            printf("%d",estoque[i].emprestimos[j]);
-        }
+        printf("%d",estoque[i].id);
+        
     }
 }
 
@@ -265,7 +285,7 @@ int main(){
     int opt = 0;
     while(opt != 6){
         printf("-------Menu-------\n");
-        printf("1- Cadastrar livro\n2- Consultar livro\n3- Emprestimo de livro\n4-Devolucao\n5-Remover Livro\n");
+        printf("1- Cadastrar livro\n2- Consultar livro\n3- Emprestimo de livro\n4- Devolucao\n5- Remover Livro\n");
         scanf("%d",&opt);
         switch (opt){
             case 1:
@@ -282,7 +302,9 @@ int main(){
                 break;
             case 5:
                 remover_livro(estoque);
-            
+                break;
+            case 7:
+                teste(estoque);
         }
     }
 }
