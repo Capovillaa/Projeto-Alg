@@ -304,4 +304,33 @@ void remover_livro(struct dados_livro estoque[]) {
 
     printf("Livro não encontrado no estoque.\n");
 }
-
+int main(){
+    struct dados_livro estoque[100];
+    struct cliente clientes[1000];
+    int opt = 0;
+    while(opt != 6){
+        printf("-------Menu-------\n");
+        printf("1- Cadastrar livro\n2- Consultar livro\n3- Emprestimo de livro\n4- Devolucao\n5- Remover Livro\n6- Sair\n");
+        scanf("%d",&opt);
+        switch (opt){
+            case 1:
+                cadastro_livro(estoque);
+                break;
+            case 2:
+                consulta_livro(estoque);
+                break;
+            case 3:
+                emprestimo_livro(estoque,clientes);
+                break;
+            case 4:
+                devolucao(estoque,clientes);
+                break;
+            case 5:
+                remover_livro(estoque);
+                break;
+            default:
+                printf("Opcao invalida\n");
+                break;
+        }
+    }
+}
