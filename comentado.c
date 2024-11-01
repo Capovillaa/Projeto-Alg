@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-// Variáveis globais para contagem de clientes, livros e IDs de clientes.
 int qtd_clientes = 0;
 int qtdLivros = 0;
 int id_dos_clientes = 0;
