@@ -163,3 +163,146 @@ void consulta_livro(struct dados_livro estoque[]) {
         }
     }
 }
+// Função para realizar o empréstimo de um livro
+void emprestimo_livro(struct dados_livro estoque[], struct cliente clientes[]) {
+    int id_livro;
+    int opt = 0; 
+
+    printf("------------------\n");
+    printf("1-Cadastrar Cliente\n2-Cliente já cadastrado\n");
+    scanf("%d", &opt); 
+    switch (opt) {
+        case 1:
+            cadastro_clientes(&clientes[qtd_clientes]);
+            break;
+        case 2:
+            break;
+        default:
+            printf("Opção inválida\n");
+            return; 
+    }
+
+    int id_temp_livro, id_cliente_temp;
+    printf("Digite o ID do cliente: ");
+    scanf("%d", &id_cliente_temp); 
+
+    // Verifica se o ID do cliente existe
+    while (verifica_id_cliente(clientes, id_cliente_temp) != 1) {
+        printf("O cliente com o Id %d não existe,Digite outro:\n", id_cliente_temp);
+        scanf("%d", &id_cliente_temp); // Solicita um novo ID se o anterior for inválido
+    }
+
+    printf("Digite o Id do livro: ");
+    scanf("%d", &id_temp_livro); 
+
+    // Verifica se o ID do livro existe
+    while (verifica_id_livro(estoque, id_temp_livro) != 1) {
+        printf("O livro com o Id %d não existe,Digite outro:\n", id_temp_livro);
+        scanf("%d", &id_temp_livro); // Solicita um novo ID se o anterior for inválido
+    }
+
+    // Verifica se o cliente já possui um empréstimo ativo desse livro
+    for (int i = 0; i < qtdLivros; i++) {
+        if (estoque[i].id == id_temp_livro) {
+            for (int j = 0; j < estoque[i].tamanhoEm; j++) {
+                if (estoque[i].emprestimos[j] == id_cliente_temp) {
+                    printf("Você já possui um empréstimo ativo deste livro. Não é possível fazer outro.\n");
+                    return; // Retorna se já tiver um empréstimo ativo
+                }
+            }
+        }
+    }
+
+    // Realiza o empréstimo do livro ao cliente
+    for (int i = 0; i < qtdLivros; i++) {
+        if (estoque[i].id == id_temp_livro) {
+            for (int j = 0; j < qtd_clientes; j++) {
+                if (clientes[j].id == id_cliente_temp) {
+                    if (estoque[i].qtd == 0) {
+                        printf("Não há mais exemplares deste livro\n");
+                        return; // Retorna se não houver mais exemplares disponíveis
+                    }
+                    // Adiciona o ID do cliente ao registro de empréstimos
+                    estoque[i].emprestimos[estoque[i].tamanhoEm] = clientes[j].id;
+                    estoque[i].qtd--; // Reduz a quantidade de livros disponíveis
+                    estoque[i].tamanhoEm++; // Aumenta o tamanho dos empréstimos
+                    printf("Empréstimo realizado com sucesso!\nRestam %d exemplares deste livro\n", estoque[i].qtd);
+                    return; // Retorna após realizar o empréstimo
+                }
+            }
+        }
+    }
+}
+
+// Função para realizar a devolução de um livro
+void devolucao(struct dados_livro estoque[], struct cliente clientes[]) {
+    int id_temp_livro, id_cliente_temp;
+    printf("------------------\n");
+    printf("Digite o id do livro a ser devolvido: ");
+    scanf("%d", &id_temp_livro); 
+
+    // Verifica se o ID do livro existe
+    while (verifica_id_livro(estoque, id_temp_livro) != 1) {
+        printf("O livro com o Id %d não existe,Digite outro:\n", id_temp_livro);
+        scanf("%d", &id_temp_livro); // Solicita um novo ID se o anterior for inválido
+    }
+
+    printf("Digite o id do cliente: ");
+    scanf("%d", &id_cliente_temp); 
+
+    // Verifica se o ID do cliente existe
+    while (verifica_id_cliente(clientes, id_cliente_temp) != 1) {
+        printf("O cliente com o Id %d não existe,Digite outro:\n", id_cliente_temp);
+        scanf("%d", &id_cliente_temp); // Solicita um novo ID se o anterior for inválido
+    }
+
+    // Realiza a devolução do livro
+    for (int i = 0; i < qtdLivros; i++) {
+        if (estoque[i].id == id_temp_livro) {
+            for (int j = 0; j < estoque[i].tamanhoEm; j++) {
+                if (estoque[i].emprestimos[j] == id_cliente_temp) {
+                    estoque[i].qtd++; // Aumenta a quantidade de livros disponíveis
+
+                    // Remove o ID do cliente da lista de empréstimos
+                    for (int k = j; k < estoque[i].tamanhoEm - 1; k++) {
+                        estoque[i].emprestimos[k] = estoque[i].emprestimos[k + 1];
+                    }
+
+                    estoque[i].tamanhoEm--; // Reduz o tamanho dos empréstimos
+                    printf("Livro devolvido com sucesso!!\n");
+                    break; 
+                }
+            }
+        }
+    }
+}
+
+// Função para remover um livro do estoque
+void remover_livro(struct dados_livro estoque[]) {
+    int id_temp_livro;
+    printf("------------------\n");
+    printf("Digite o id do livro a ser removido do estoque: ");
+    scanf("%d", &id_temp_livro); 
+
+    // Verifica se o ID do livro existe
+    while (verifica_id_livro(estoque, id_temp_livro) != 1) {
+        printf("O livro com o Id %d não existe,Digite outro:\n", id_temp_livro);
+        scanf("%d", &id_temp_livro); // Solicita um novo ID se o anterior for inválido
+    }
+
+    // Remove o livro do estoque
+    for (int i = 0; i < qtdLivros; i++) {
+        if (estoque[i].id == id_temp_livro) {
+            // Desloca os livros restantes para preencher a lacuna
+            for (int j = i; j < qtdLivros - 1; j++) {
+                estoque[j] = estoque[j + 1];
+            }
+            qtdLivros--; // Reduz a contagem total de livros
+            printf("Livro com id %d removido do estoque com sucesso!\n", id_temp_livro);
+            return; 
+        }
+    }
+
+    printf("Livro não encontrado no estoque.\n");
+}
+
